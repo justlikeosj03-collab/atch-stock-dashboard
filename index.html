@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATCH AI Stock Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+</head>
+<body>
+    <header class="topbar">
+        <div class="brand">
+            <span class="dot"></span>
+            ATCH AI
+        </div>
+        <button id="refreshBtn" class="refresh">↻ 새로고침</button>
+    </header>
+
+    <main>
+        <section class="hero card">
+            <div>
+                <div class="eyebrow">AtlasClear Holdings · NYSE American</div>
+                <h1>AtlasClear Holdings <span>ATCH</span></h1>
+                <div class="price-row">
+                    <strong id="price">-</strong>
+                    <span id="change" class="change">-</span>
+                </div>
+                <div id="updated" class="muted">데이터를 불러오는 중...</div>
+            </div>
+            <div class="status">
+                <span class="live-dot"></span>
+                <span id="statusText">데이터 확인 중</span>
+            </div>
+        </section>
+
+        <section class="grid cards">
+            <div class="metric card">
+                <span>거래량</span>
+                <b id="volume">-</b>
+            </div>
+            <div class="metric card">
+                <span>52주 최고</span>
+                <b id="high52">-</b>
+            </div>
+            <div class="metric card">
+                <span>52주 최저</span>
+                <b id="low52">-</b>
+            </div>
+            <div class="metric card">
+                <span>시가총액</span>
+                <b id="marketCap">-</b>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <div>
+                    <h2>주가</h2>
+                    <p>실제 시장 데이터 기반</p>
+                </div>
+            </div>
+            <div class="periods">
+                <button data-days="30">1개월</button>
+                <button data-days="90">3개월</button>
+                <button data-days="180">6개월</button>
+                <button data-days="365">1년</button>
+                <button data-days="1825" class="active">5년</button>
+            </div>
+            <div id="priceChart" class="chart"></div>
+        </section>
+
+        <section class="ai card">
+            <div class="section-head">
+                <div>
+                    <h2>🤖 AI 주가 예측</h2>
+                    <p>LSTM · 다음 거래일 종가 예측</p>
+                </div>
+            </div>
+            <div class="ai-grid">
+                <div class="ai-main">
+                    <span>예상 종가</span>
+                    <strong id="prediction">-</strong>
+                    <em id="predictionChange">-</em>
+                </div>
+                <div class="mini">
+                    <span>MAE</span>
+                    <b id="mae">-</b>
+                </div>
+                <div class="mini">
+                    <span>RMSE</span>
+                    <b id="rmse">-</b>
+                </div>
+            </div>
+            <div id="predictionChart" class="chart"></div>
+            <div class="notice">※ AI 예측은 통계적 모델의 추정값이며 실제 주가를 보장하지 않습니다.</div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <div>
+                    <h2>📊 재무제표</h2>
+                    <p>최근 공개된 재무 데이터</p>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>기간</th>
+                            <th>매출</th>
+                            <th>영업이익</th>
+                            <th>순이익</th>
+                            <th>총자산</th>
+                            <th>총부채</th>
+                        </tr>
+                    </thead>
+                    <tbody id="financialBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <div>
+                    <h2>🩳 공매도</h2>
+                    <p>공개된 최신 공매도 데이터</p>
+                </div>
+            </div>
+            <div class="grid cards">
+                <div class="metric">
+                    <span>Short Interest</span>
+                    <b id="shortShares">-</b>
+                </div>
+                <div class="metric">
+                    <span>Short %</span>
+                    <b id="shortPct">-</b>
+                </div>
+                <div class="metric">
+                    <span>Days to Cover</span>
+                    <b id="dtc">-</b>
+                </div>
+                <div class="metric">
+                    <span>기준일</span>
+                    <b id="shortDate">-</b>
+                </div>
+            </div>
+            <div class="notice">공매도 데이터는 거래소 실시간 데이터가 아니라 공개된 정기 데이터입니다.</div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <div>
+                    <h2>📑 최근 공시</h2>
+                    <p>SEC EDGAR Filing</p>
+                </div>
+            </div>
+            <div class="filings" id="filings"></div>
+        </section>
+
+        <section class="card">
+            <div class="section-head">
+                <div>
+                    <h2>🏢 기업 정보</h2>
+                    <p>AtlasClear Holdings, Inc.</p>
+                </div>
+            </div>
+            <div class="company-grid">
+                <div>
+                    <span>티커</span>
+                    <b>ATCH</b>
+                </div>
+                <div>
+                    <span>시장</span>
+                    <b>NYSE American</b>
+                </div>
+                <div>
+                    <span>통화</span>
+                    <b>USD</b>
+                </div>
+                <div>
+                    <span>데이터</span>
+                    <b>Yahoo Finance / SEC</b>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            교육용 프로젝트 · 투자 조언이 아닙니다<br>
+            마지막 갱신: <span id="footerTime">-</span>
+        </footer>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
